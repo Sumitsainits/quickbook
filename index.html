@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API testing</title>
+</head>
+
+<body>
+    <script>
+
+        const ClientId = "ABtPVQ0l7sYrSik4ipHyTbcBFnfBs7uf4wYJZOobqYu6lZfyw9";
+        const ClientSecret = "HJrGZEfbEfwWSEkpMiPUIJ5j9vM747HLXUhJIjJ1";
+        const CallbackURI = "http://localhost:5000/callback/";
+        const environment = 'sandbox';
+        const RefreshToken = "";
+        const authorisation = 'AB11600092118lUMeYy4sDzwvbf0WClngzGrNpe25HDOu3fNYG';
+        const realme = '193514846508104'
+
+        const baseURI = 'http://localhost:5000'
+
+        if (localStorage.getItem('firstTime') == null || localStorage.getItem('firstTime') == 'false') {
+            localStorage.setItem("clientId", ClientId);
+            localStorage.setItem("clientSecret", ClientSecret);
+            localStorage.setItem("callbackUri", CallbackURI);
+            fetch(baseURI + "/authClient", {
+                method: 'POST',
+                body: JSON.stringify({ ClientId, ClientSecret, CallbackURI, environment })
+            }).then(data => data.json()
+            ).then(data => {
+                window.open(data.authUri, '_blank');
+                localStorage.setItem('firstTime', 'false')
+            });
+        }
+
+        //let disButton = document.getElementById('disconnect');
+        function disconnect() {
+            console.log('Disconnect prompt by user');
+            fetch('http://localhost:5000/revokeToken'
+            ).then(data => data.json()
+            ).then(data => {
+                window.open(data.authUri, '_blank');
+            });
+        }
+
+        function refreshToken() {
+            fetch('http://localhost:5000/refreshToken')
+                .then(data => data.json()
+                ).then(data => {
+                    console.log('token refreshed')
+                });
+        }
+
+        function getAccounts() {
+            fetch('http://localhost:5000/getAccounts')
+                .then(data => data.json()
+                ).then(data => {
+                    console.log(data)
+                });
+        }
+
+        function selectedAcc() {
+            let s = Math.floor(Math.random() * 4) + 72 
+            fetch('http://localhost:5000/getAccountByType?id=' + s)
+                .then(data => data.json()
+                ).then(data => {
+                    console.log(data)
+                });
+        }
+
+        function createbill() {
+            let body = {
+                "Line": [
+                    {
+                        "DetailType": "AccountBasedExpenseLineDetail",
+                        "Amount": 200.0,
+                        "Id": "1",
+                        "AccountBasedExpenseLineDetail": {
+                            "AccountRef": {
+                                "value": "7"
+                            }
+                        }
+                    }
+                ],
+                "VendorRef": {
+                    "value": "56"
+                }
+            }
+            fetch(baseURI + "/createBill", {
+                method: 'POST',
+                body: JSON.stringify(body)
+            }).then(data => data.json()
+            ).then(data => {
+                window.open(data.authUri, '_blank');
+                localStorage.setItem('firstTime', 'false')
+            });
+        }
+
+        function getvendor(){
+            fetch('http://localhost:5000/getVendor?id=147')
+                .then(data => data.json()
+                ).then(data => {
+                    console.log(data)
+                });
+        }
+
+        function getbills() {
+            fetch('http://localhost:5000/getBills')
+                .then(data => data.json()
+                ).then(data => {
+                    console.log(data)
+                });
+        }
+
+        
+
+    </script>
+    <p>Your result will show up here...</p>
+    <button id="disconnect" onclick="disconnect()">Disconnect</button>
+    <button id="createToken">Create Token</button>
+    <button onclick="refreshToken()">RefreshToken</button>
+    <div>
+        <button onclick="getAccounts()">Get Acc.</button>
+        <button onclick="selectedAcc()">getAccountsBYID</button>
+    </div>
+
+    <div>
+        <button onclick="createbill()">Create bill</button>
+    </div><br>
+    <div>
+        <button onclick="getvendor()">Get vendor</button>
+    </div><br>
+    <div>
+        <button onclick="getbills()">Get bills</button>
+    </div>
+
+</body>
+
+</html>
