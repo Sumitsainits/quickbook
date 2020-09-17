@@ -61,7 +61,7 @@
         }
 
         function selectedAcc() {
-            let s = Math.floor(Math.random() * 4) + 72 
+            let s = Math.floor(Math.random() * 4) + 72
             fetch('http://localhost:5000/getAccountByType?id=' + s)
                 .then(data => data.json()
                 ).then(data => {
@@ -69,36 +69,8 @@
                 });
         }
 
-        function createbill() {
-            let body = {
-                "Line": [
-                    {
-                        "DetailType": "AccountBasedExpenseLineDetail",
-                        "Amount": 200.0,
-                        "Id": "1",
-                        "AccountBasedExpenseLineDetail": {
-                            "AccountRef": {
-                                "value": "7"
-                            }
-                        }
-                    }
-                ],
-                "VendorRef": {
-                    "value": "56"
-                }
-            }
-            fetch(baseURI + "/createBill", {
-                method: 'POST',
-                body: JSON.stringify(body)
-            }).then(data => data.json()
-            ).then(data => {
-                window.open(data.authUri, '_blank');
-                localStorage.setItem('firstTime', 'false')
-            });
-        }
-
-        function getvendor(){
-            fetch('http://localhost:5000/getVendor?id=147')
+        function getvendor() {
+            fetch('http://localhost:5000/allVendors')
                 .then(data => data.json()
                 ).then(data => {
                     console.log(data)
@@ -113,27 +85,188 @@
                 });
         }
 
-        
+        function getInvoice() {
+            fetch('http://localhost:5000/allInvoice')
+                .then(data => data.json()
+                ).then(data => {
+                    console.log(data)
+                });
+        }
+
+        function getPaym() {
+            fetch('http://localhost:5000/allPayments')
+                .then(data => data.json()
+                ).then(data => {
+                    console.log(data)
+                });
+        }
+
+        function getProduct() {
+            fetch('http://localhost:5000/allProducts')
+                .then(data => data.json()
+                ).then(data => {
+                    console.log(data)
+                });
+        }
+
+        function getCustomer() {
+            fetch('http://localhost:5000/allCustomers')
+                .then(data => data.json()
+                ).then(data => {
+                    console.log(data)
+                });
+        }
+
+        let createBillObject = {
+            "Line": [
+                {
+                    "DetailType": "AccountBasedExpenseLineDetail",
+                    "Amount": 200.0,
+                    "Id": "1",
+                    "AccountBasedExpenseLineDetail": {
+                        "AccountRef": {
+                            "value": "7"
+                        }
+                    }
+                }
+            ],
+            "VendorRef": {
+                "value": "56"
+            }
+        },
+
+            createCustomerObject = {
+                "FullyQualifiedName": "King Groceries",
+                "PrimaryEmailAddr": {
+                    "Address": "jdrew@myemail.com"
+                },
+                "DisplayName": "King's Groceries",
+                "Suffix": "Jr",
+                "Title": "Mr",
+                "MiddleName": "B",
+                "Notes": "Here are other details.",
+                "FamilyName": "King",
+                "PrimaryPhone": {
+                    "FreeFormNumber": "(555) 555-5555"
+                },
+                "CompanyName": "King Groceries",
+                "BillAddr": {
+                    "CountrySubDivisionCode": "CA",
+                    "City": "Mountain View",
+                    "PostalCode": "94042",
+                    "Line1": "123 Main Street",
+                    "Country": "USA"
+                },
+                "GivenName": "James"
+            },
+
+            createInvoiceObject = {
+                "Line": [
+                    {
+                        "DetailType": "SalesItemLineDetail",
+                        "Amount": 100.0,
+                        "SalesItemLineDetail": {
+                            "ItemRef": {
+                                "name": "Services",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "CustomerRef": {
+                    "value": "1"
+                }
+            },
+
+            createPaymentObject = {
+                "TotalAmt": 25.0,
+                "CustomerRef": {
+                    "value": "20"
+                }
+            },
+
+            createVendor = {
+                "PrimaryEmailAddr": {
+                    "Address": "dbradley@myemail.com"
+                },
+                "WebAddr": {
+                    "URI": "http://DiannesAutoShop.com"
+                },
+                "PrimaryPhone": {
+                    "FreeFormNumber": "(650) 555-2342"
+                },
+                "DisplayName": "Dianne's Auto Shop",
+                "Suffix": "Sr.",
+                "Title": "Ms.",
+                "Mobile": {
+                    "FreeFormNumber": "(650) 555-2000"
+                },
+                "FamilyName": "Bradley",
+                "TaxIdentifier": "99-5688293",
+                "AcctNum": "35372649",
+                "CompanyName": "Dianne's Auto Shop",
+                "BillAddr": {
+                    "City": "Millbrae",
+                    "Country": "U.S.A",
+                    "Line3": "29834 Mustang Ave.",
+                    "Line2": "Dianne Bradley",
+                    "Line1": "Dianne's Auto Shop",
+                    "PostalCode": "94030",
+                    "CountrySubDivisionCode": "CA"
+                },
+                "GivenName": "Dianne",
+                "PrintOnCheckName": "Dianne's Auto Shop"
+            },
+
+            updateCustomerObject = {
+                "MiddleName": "Mark",
+                "SyncToken": "0",
+                "Id": "2",
+                "sparse": true
+            },
+
+            updateInvoiceObject = {
+                "SyncToken": "0",
+                "Id": "238",
+                "sparse": true,
+                "DueDate": "2015-09-30"
+            }
+
+
 
     </script>
     <p>Your result will show up here...</p>
     <button id="disconnect" onclick="disconnect()">Disconnect</button>
     <button id="createToken">Create Token</button>
     <button onclick="refreshToken()">RefreshToken</button>
+    <br />
     <div>
         <button onclick="getAccounts()">Get Acc.</button>
-        <button onclick="selectedAcc()">getAccountsBYID</button>
-    </div>
+        <!-- <button onclick="selectedAcc()">getAccountsBYID</button> -->
+    </div><br />
+
+    <!-- <div>
+        <button onclick="createbill()">Create bill</button>
+    </div><br> -->
 
     <div>
-        <button onclick="createbill()">Create bill</button>
-    </div><br>
+        <button onclick="getCustomer()">Get Customer</button>
+    </div><br />
     <div>
         <button onclick="getvendor()">Get vendor</button>
-    </div><br>
+    </div><br />
     <div>
         <button onclick="getbills()">Get bills</button>
-    </div>
+    </div><br />
+    <div>
+        <button onclick="getInvoice()">Get Invoice</button>
+    </div><br />
+    <div>
+        <button onclick="getPaym()">Get Payment</button>
+    </div><br /><br />
+    <!-- <div>
+        <button onclick="getProduct()">Get Product</button>
+    </div> -->
 
 </body>
 
