@@ -45,7 +45,7 @@ app.post('/authClient', (req, res) => {
     });
 
     var authUri = oauthClient.authorizeUri({
-        scope: [OAuthClient.scopes.Accounting],
+        scope: [OAuthClient.scopes.Accounting,OAuthClient.scopes.OpenId],
         state: 'testState'
     });
 
@@ -68,6 +68,30 @@ app.get('/callback/', (req, res) => {
                 null, /* minor version */
                 '2.0', /* oauth version */
                 tokenList.refresh_token /* refresh token */);
+
+                qbo.createBill({
+                    "Line": [
+                      {
+                        "DetailType": "AccountBasedExpenseLineDetail", 
+                        "Amount": 200.0, 
+                        "Id": "1", 
+                        "AccountBasedExpenseLineDetail": {
+                          "AccountRef": {
+                            "value": "7"
+                          }
+                        }
+                      }
+                    ], 
+                    "VendorRef": {
+                      "value": "56"
+                    }
+                  }, function(err,bill){
+                      if(err){
+                        console.log(err)
+                        return
+                      } 
+                      console.log(bill)
+                  })
         })
         .catch(function (e) {
             console.error("The error message is :" + e.originalMessage);
@@ -127,11 +151,7 @@ app.get('/getAccounts', (req, res) => {
 
 // bills
 
-app.post('/createBill', (req, res) => {
-    qbo.createBill(req.body, callback => {
-        console.log(callback);
-    })
-})
+
 
 app.get('/getBills', (req, res) => {
     qbo.findBills({ fetchAll: true },
